@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include "get_next_line/get_next_line.h"
 #include "aux/aux.h"
+#include "process_map.h"
 
 int   rows_map(char *route)
 {
@@ -22,8 +23,11 @@ int   rows_map(char *route)
 	}
 	while ((line = get_next_line(fd)) != NULL)
 	{
-		rows++;
-		free(line); 
+		if(line[0]!='\0')
+		{
+			rows++;
+			free(line); 
+		}
 	}
 	close(fd);
 	return (rows);     
@@ -89,27 +93,54 @@ int	check_chars_allow(char *route)
 	int	fd;
 	char	*line;
 
-	allow = "01PCD";
-	i = 0;
+	allow = "01PC\n";
 	fd = open(route,O_RDONLY);
 	if (fd == -1)
 	{
 		perror("Error al abrir el archivo");
 		return(-1);
 	}
-	while (line = get_next_line(fd)!= NULL)
+	while ((line = get_next_line(fd))!= NULL)
 	{
-		if(only_chars_allowed(line,"01CP") == 0)
-        {
-            free(line);
-            return(0);
-        }
+		if(only_chars_allowed(line,allow) == 0) //es lo mismo que only_chars_allowed(line,allow)
+		//only_chars_allowed(line,allow) == 1 es lo mismo que !only_chars_allowed(line,allow)
+		{
+			free(line);
+			return(0);
+		}
+		free(line);
 	}
+	close(fd);
+	return(1);
+}
 
+int	calc_size_x(char *route)
+{
+	int	size;
+	int	fd;
+	char	*line;
+
+	fd = open(route,O_RDONLY);
+	if(fd == -1)
+	{
+		perror("Error al abrir el archivo");
+		return(-1);
+	}
+	line = get_next_line(fd);
+	size = line_len(line)*10;
+	return(size);
+}
+
+int	calc_size_y(char *route)
+{
+	int	size;
+	
+	size = rows_map(route) * 10;
+	return(size);
 }
 
 int   main(void)
 {
-	printf("%d\n",is_rectangle("/home/rober/Desktop/cursus/so_long/process_map/get_next_line/test.txt"));
+	printf("%d\n",check_chars_allow("/home/rcarpio-/cursus/so_long/process_map/get_next_line/test.txt"));
       return(0);
 }

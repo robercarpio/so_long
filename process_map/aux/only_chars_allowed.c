@@ -23,3 +23,8 @@ int	only_chars_allowed(char *str, char *allow)
 	}
 	return(b);
 }
+// int	main(void)
+// {
+// 	printf("%d\n",only_chars_allowed("01PC0\n","01PC\n"));
+// 	return(0);
+// }
