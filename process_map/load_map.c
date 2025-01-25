@@ -99,7 +99,11 @@ int	check_chars_allow(char *route)
 	}
 	while (line = get_next_line(fd)!= NULL)
 	{
-		//ft_contains
+		if(only_chars_allowed(line,"01CP") == 0)
+        {
+            free(line);
+            return(0);
+        }
 	}
 
 }

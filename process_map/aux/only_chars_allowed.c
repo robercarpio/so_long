@@ -1,5 +1,5 @@
-
 #include "aux.h"
+
 #include <stdio.h>
 
 int	only_chars_allowed(char *str, char *allow)
